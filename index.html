@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>山陽&山陰7日遊2025</title>
+    <!-- 添加 html2pdf.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            padding: 20px;
+            /* 移除任何可能影響渲染的溢出設定 */
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px; /* 調整為較小的最大寬度 */
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+        }
+
+        /* 其他樣式保持不變 */
+        .header {
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        .day-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            /* 確保每個卡片都能完整顯示 */
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.2rem;
+        }
+
+        .download-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .download-btn:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        @media print {
+            body {
+                padding: 0;
+                margin: 0;
+            }
+
+            .container {
+                width: 100%;
+                max-width: none;
+                padding: 10mm;
+                margin: 0;
+            }
+
+            .day-card {
+                break-inside: avoid;
+                page-break-inside: avoid;
+                margin-bottom: 20px;
+                box-shadow: none;
+            }
+
+            .download-btn {
+                display: none;
+            }
+        }
+
+        .day-header {
+            display: flex;
+            align-items: center;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #f0f0f0;
+            margin-bottom: 20px;
+        }
+
+        .day-header i {
+            font-size: 24px;
+            color: #4a90e2;
+            margin-right: 12px;
+        }
+
+        .day-header h2 {
+            font-size: 1.5rem;
+            color: #333;
+        }
+
+        .location {
+            margin-bottom: 24px;
+            padding-left: 24px;
+            position: relative;
+        }
+
+        .location::before {
+            content: '📍';
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        .location h3 {
+            font-size: 1.2rem;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .time {
+            display: flex;
+            align-items: center;
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+        .time::before {
+            content: '🕒';
+            margin-right: 6px;
+        }
+
+        .transport {
+            background: #f8f9fa;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+        }
+
+        .transport::before {
+            content: '🚅';
+            margin-right: 8px;
+        }
+
+        .notes {
+            background: #fff9e6;
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 16px;
+        }
+
+        .notes-title {
+            display: flex;
+            align-items: center;
+            color: #b0851f;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .notes-title::before {
+            content: '📝';
+            margin-right: 8px;
+        }
+
+        .food {
+            background: #f0f7f0;
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 16px;
+        }
+
+        .food-title {
+            display: flex;
+            align-items: center;
+            color: #2d682d;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .food-title::before {
+            content: '🍴';
+            margin-right: 8px;
+        }
+
+        .accom {
+            background: #EEE4E1;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-top: 16px;
+            display: flex;
+            align-items: center;
+        }
+
+        .accom::before {
+            content: '🏠';
+            margin-right: 8px;
+        }
+
+        ul {
+            list-style-position: inside;
+            padding-left: 16px;
+        }
+
+        li {
+            margin-bottom: 4px;
+            color: #444;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .day-card {
+                padding: 16px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- <button onclick="downloadPDF()" class="download-btn">
+        📥 下載行程表 PDF
+    </button> -->
+    <div class="container">
+        <div class="header">
+            <h1>櫻戀古城-山陽漫遊記</h1>
+            <p>3/23 - 3/29 2025</p>
+        </div>
+
+        <div class="day-card">
+            <div class="day-header">
+                <i>📅</i>
+                <h2>Day 1: 3/23(日) 岡山&吉備津</h2>
+            </div>
+
+            <div class="transport">
+                14:35 抵達岡山機場 → 15:30 抵達飯店辦理入住（くれたけイン岡山）
+            </div>
+
+            <div class="location">
+                <h3>飯店Check-in</h3>
+                <div class="time">15:30-16:00</div>
+            </div>
+
+            <div class="transport">
+                搭乘JR桃太郎線→到吉備津站 約45分
+            </div>
+
+            <div class="location">
+                <h3>吉備津神社</h3>
+                <div class="time">17:00-18:00</div>
+                <p>開放時間：5:00-18:00</p>
+            </div>
+
+            <div class="location">
+                <h3>吉備津彥神社</h3>
+                <div class="time">17:00-18:00</div>
+                <p>開放時間：5:00-18:00</p>
+            </div>
+
+            <div class="notes">
+                <div class="notes-title">注意事項</div>
+                <ul>
+                    <li>山陰＆岡山鐵路周遊券不包含JR桃太郎線</li>
+                    <li>吉備津彥神社有桃太郎相關伴手禮</li>
+                </ul>
+            </div>
+
+            <div class="accom">
+                Kuretake Inn Okayama
+            </div>
+        </div>
+
+        <!-- Day 2 -->
+        <div class="day-card">
+            <div class="day-header">
+                <i>📅</i>
+                <h2>Day 2: 3/24(一) 尾道</h2>
+            </div>
+
+            <div class="transport">
+                09:00 從飯店出發 → 11:10 抵達大久野島
+            </div>
+
+            <div class="location">
+                <h3>大久野島</h3>
+                <div class="time">11:10-12:10</div>
+                <p>兔子</p>
+            </div>
+
+            <div class="transport">
+                船 → 吳線 → 山陽本縣 → 尾道 約1.5h
+            </div>
+
+            <div class="location">
+                <h3>尾道本通商店街</h3>
+                <div class="time">14:00-15:00</div>
+                <p>探索在地商店街文化，吃午餐</p>
+            </div>
+
+            <div class="location">
+                <h3>千光寺山口纜車、貓之細道</h3>
+                <div class="time">15:15-16:45</div>
+                <ul>
+                    <li>纜車票價：單程320円，來回500円</li>
+                    <li>營業時間：09:00-17:15（每15分鐘一班）</li>
+                </ul>
+            </div>
+
+            <div class="notes">
+                <div class="notes-title">注意事項</div>
+                <ul>
+                    <li>平日商店街較多店家休息，建議接近午餐時間再前往</li>
+                    <li>貓之細道建議搭纜車上去，步行下山</li>
+                </ul>
+            </div>
+
+            <div class="accom">
+                Kuretake Inn Okayama
+            </div>
+        </div>
+
+        <!-- Day 3 -->
+        <div class="day-card">
+            <div class="day-header">
+                <i>📅</i>
+                <h2>Day 3: 3/25(二) 廣島城周邊</h2>
+            </div>
+
+            <div class="transport">
+                09:00 從岡山站搭新幹線至廣島站（約40分鐘）
+            </div>
+
+            <div class="location">
+                <h3>廣島城、護國神社、天守閣</h3>
+                <div class="time">10:00-12:00</div>
+                <ul>
+                    <li>門票：370円</li>
+                    <li>開放時間：09:00-18:00</li>
+                </ul>
+            </div>
+
+            <div class="location">
+                <h3>本通商店街、廣島和平紀念公園、原爆圓頂館</h3>
+                <div class="time">13:30-17:00</div>
+                <p>和平紀念公園範圍廣大，建議預留充足時間</p>
+            </div>
+
+            <div class="location">
+                <h3>駅前廣場</h3>
+                <div class="time">17:30-19:00</div>
+                <p>享用廣島燒晚餐</p>
+            </div>
+
+            <div class="food">
+                <div class="food-title">推薦美食</div>
+                <ul>
+                    <li>一風堂拉麵</li>
+                    <li>廣島燒村</li>
+                    <li>長田屋廣島燒</li>
+                    <li>幸福鬆餅</li>
+                </ul>
+            </div>
+
+            <div class="notes">
+                <div class="notes-title">注意事項</div>
+                <ul>
+                    <li>廣島城櫻花季參考：約3/25開花</li>
+                    <li>原爆圓頂館周邊河畔有約300株櫻花</li>
+                </ul>
+            </div>
+
+            <div class="accom">
+                Kuretake Inn Okayama
+            </div>
+        </div>
+
+        <!-- Day 4 -->
+        <div class="day-card">
+            <div class="day-header">
+                <i>📅</i>
+                <h2>Day 4: 3/26(三) 宮島</h2>
+            </div>
+
+            <div class="transport">
+                09:00 從飯店出發 → 10:50 抵達宮島口（岡山→廣島→宮島口）
+                11:00 搭渡輪至宮島（每小時3~4班，約10分鐘航程）
+            </div>
+
+            <div class="location">
+                <h3>宮島參道商店街</h3>
+                <div class="time">11:10-12:30</div>
+                <p>享用牡蠣與在地美食</p>
+            </div>
+
+            <div class="location">
+                <h3>嚴島神社、海上鳥居</h3>
+                <div class="time">12:30-14:00</div>
+                <p>漲潮時段最佳觀賞時機</p>
+            </div>
+
+            <div class="location">
+                <h3>大聖院</h3>
+                <div class="time">14:20-16:00</div>
+            </div>
+
+            <div class="location">
+                <h3>選擇性行程</h3>
+                <div class="time">16:00-17:30</div>
+                <ul>
+                    <li>紅葉谷公園</li>
+                    <li>獅子岩展望台</li>
+                </ul>
+            </div>
+
+            <div class="food">
+                <div class="food-title">推薦美食</div>
+                <ul>
+                    <li>穴子飯</li>
+                    <li>牡蠣（牡蠣屋）</li>
+                    <li>楓葉饅頭（紅葉堂）</li>
+                </ul>
+            </div>
+
+            <div class="notes">
+                <div class="notes-title">注意事項</div>
+                <ul>
+                    <li>JR Pass可免費搭渡輪，但需付100円上島稅</li>
+                    <li>潮位250CM以上可觀賞海上鳥居</li>
+                    <li>潮位100CM以下可走到鳥居下</li>
+                </ul>
+            </div>
+
+            <div class="accom">
+                Kurashiki Royal Art Hotel
+            </div>
+        </div>
+
+        <!-- Day 5 -->
+        <div class="day-card">
+            <div class="day-header">
+                <i>📅</i>
+                <h2>Day 5: 3/27(四) 姬路城</h2>
+            </div>
+
+            <div class="transport">
+                09:00 從飯店出發搭乘山陽新幹線 → 約10:10 抵達姬路（約65分鐘），從北口出站
+            </div>
+
+            <div class="location">
+                <h3>姬路城、好古園</h3>
+                <div class="time">10:20-12:30</div>
+                <ul>
+                    <li>套票：1050円</li>
+                    <li>世界文化遺產，日本最大天守閣</li>
+                </ul>
+            </div>
+
+            <div class="location">
+                <h3>城見台公園</h3>
+                <div class="time">12:30-13:30</div>
+            </div>
+
+            <div class="location">
+                <h3>姬路市立動物園</h3>
+                <div class="time">13:30-14:30</div>
+            </div>
+
+            <div class="location">
+                <h3>兵庫縣歷史博物館</h3>
+                <div class="time">14:30-15:30</div>
+                <p>一樓免費，二樓要門票，門票：200円</p>
+            </div>
+
+            <div class="location">
+                <h3>二階町商店街</h3>
+                <div class="time">15:00-16:30</div>
+                <p>門票：200円</p>
+            </div>
+
+            <div class="location">
+                <h3>姬路FESTA</h3>
+                <div class="time">17:00-18:00</div>
+            </div>
+
+            <div class="food">
+                <div class="food-title">推薦美食</div>
+                <ul>
+                    <li>活水軒 in 好古園</li>
+                </ul>
+            </div>
+
+            <div class="notes">
+                <div class="notes-title">注意事項</div>
+                <ul>
+                    <li>護城河環遊乘船體驗需預約，費用1000円</li>
+                    <li>姫路城・好古園通票可以在姬路城或是好古園的售票處購入</li>
+                </ul>
+            </div>
+
+            <div class="accom">
+                Kuretake Inn Okayama
+            </div>
+        </div>
+
+        <!-- Day 6 -->
+        <div class="day-card">
+            <div class="day-header">
+                <i>📅</i>
+                <h2>Day 6: 3/28(五) 岡山市區</h2>
+            </div>
+
+            <div class="transport">
+                09:00 從倉敷出發
+            </div>
+
+            <div class="notes">
+                <div class="notes-title">注意事項</div>
+                <ul>
+                    <li>先去倉敷館觀光案內所買遊船票，早上9點開門，因此建議最晚需於 10 點前抵達現場購票！</li>
+                </ul>
+            </div>
+
+            <div class="location">
+                <h3>倉敷美觀地區、惠比壽商店街</h3>
+                <div class="time">09:30-12:30</div>
+            </div>
+
+            <div class="location">
+                <h3>倉敷川遊船</h3>
+                <div class="time"></div>
+                <p>費用：700円/人</p>
+            </div>
+
+            <div class="location">
+                <h3>阿智神社</h3>
+                <div class="time">13:30-14:30</div>
+            </div>
+
+            <div class="location">
+                <h3>津山城（鶴山公園）賞櫻</h3>
+                <div class="time">14:30-15:30</div>
+            </div>
+
+            <div class="location">
+                <h3>城東街道保存地區、城下咖啡</h3>
+                <div class="time">15:30-16:30</div>
+            </div>
+
+            <div class="food">
+                <div class="food-title">推薦美食</div>
+                <ul>
+                    <li>七福神饅頭（倉敷商店街）</li>
+                    <li>咖哩飯（珈啡館三宅商店）</li>
+                    <li>微笑布丁＆蛋黃醬油拌飯（限量80個/天）</li>
+                    <li>吉備團子（廣榮堂）</li>
+                    <li>牡蠣仙貝（備中倉敷 瀨戶內庵）</li>
+                </ul>
+            </div>
+
+            <div class="accom">
+                Kuretake Inn Okayama
+            </div>
+        </div>
+
+        <!-- Day 7 -->
+        <div class="day-card">
+            <div class="day-header">
+                <i>📅</i>
+                <h2>Day 7: 3/29(六) 岡山城半日</h2>
+            </div>
+
+            <div class="location">
+                <h3>岡山城、岡山後樂園</h3>
+                <div class="time">09:00-11:00</div>
+                <p>套票：720円</p>
+            </div>
+
+            <div class="location">
+                <h3>岡山市表町商店街</h3>
+                <div class="time">11:30-13:00</div>
+                <p>享用午餐、最後採買</p>
+            </div>
+
+            <div class="transport">
+                13:30 前往機場
+                15:25 搭機返台
+            </div>
+
+            <div class="notes">
+                <div class="notes-title">注意事項</div>
+                <ul>
+                    <li>岡山城與後樂園相鄰，建議購買套票</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 平滑滾動功能
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // You can add more interactive features here
+        // For example, day highlighting, collapsible sections, etc.
+    </script>
+</body>
+</html>
